@@ -1,4 +1,5 @@
-import {
+import { 
+  Query, 
   Controller,
   Get,
   Post,
@@ -45,4 +46,25 @@ export class ProductController {
       product,
     });
   }
+
+  @Delete('/delete')
+  async deleteProduct(@Res() res, @Query('productID') productID) {
+    const product = await this.productService.deleteProduct(productID);
+    if (!product) throw new NotFoundException('Product Does Not Exist');
+    return res.status(HttpStatus.OK).json({
+      message: 'Product Deleted',
+      product,
+    })
+  }
+
+  @Put('/update')
+  async updateProduct(@Res() res, @Body() createProductDTO: CreateProductDTO, @Query() productID) {
+    const updatedProduct = await this.productService.updateProduct(productID, createProductDTO);
+    if (!updatedProduct) throw new NotFoundException('Product Does Not Exist');
+    return res.status(HttpStatus.OK).json({
+      message: 'Product Updated',
+      product : updatedProduct,
+    })
+  }
+
 }
